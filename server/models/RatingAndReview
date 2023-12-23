@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//create RatingAndReview Schema
 const ratingAndReviewSchema = new mongoose.Schema({
 
     user:{

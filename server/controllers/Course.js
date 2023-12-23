@@ -8,13 +8,13 @@ exports.createCourse = async (req,res)=>{
     try{
 
             //fetch data
-            const {coursName,courseDescription,whatYouWillLearn,price,tag} = req.body;
+            const {coursName,courseDescription,whatYouWillLearn,price,tag:_tag,category} = req.body;
 
-            //get thumbnail
+            //get thumbnail image from request files
             const thumbnail = req.files.thumbnailImage;
 
             //validation
-            if(!coursName || !courseDescription || !whatYouWillLearn || !price || !tag || !thumbnail){
+            if(!coursName || !courseDescription || !whatYouWillLearn || !price || !category|| !thumbnail){
                 return res.status(400).json({
                     success:false,
                     message : "All Fields Are Required",
@@ -36,13 +36,13 @@ exports.createCourse = async (req,res)=>{
             }
 
             //check given tag is valid or not
-            const tagDetails = await Tag.findById(tag);
-            if(!tagDetails){
-                return res.status(404).json({
-                    success:false,
-                    message : "Tag details not found",
-                });
-            }
+            const categoryDetails = await Category.findById(category)
+            if (!categoryDetails) {
+                 return res.status(404).json({
+                 success: false,
+                    message: "Category Details not Found",
+                })
+             }
 
             //Upload image to cloudinary
             const thumbnailImage  = await uploadImageToCloudinary(thumbnail,process.env.FOLDER_NAME);
@@ -54,7 +54,8 @@ exports.createCourse = async (req,res)=>{
                 instructor:instructorDetails._id,
                 whatYouWillLearn : whatYouWillLearn,
                 price:price,
-                tag : tagDetails._id,
+                tag : tag,
+                category: categoryDetails._id,
                 thumbnail : thumbnailImage.secure_url,
             })
             
