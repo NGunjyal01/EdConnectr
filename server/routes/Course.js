@@ -41,7 +41,7 @@ const {
 } = require("../controllers/RatingAndReview")
 
 // Importing Middlewares
-const { auth, isInstructor, isStudent, isAdmin } = require("../middleware/auth")
+const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth")
 
 // COURSE ROUTES
 
@@ -77,6 +77,6 @@ router.post("/getCategoryPageDetails", categoryPageDetails)
 // RATING AND REVIEW ROUTES
 router.post("/createRating", auth, isStudent, createRating)
 router.get("/getAverageRating", getAverageRating)
-router.get("/getReviews", getAllRatingReview)
+router.get("/getReviews", getAllRating)
 
 module.exports = router
