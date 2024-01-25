@@ -1,6 +1,7 @@
 const Profile = require("../models/Profile");
 const User = require("../models/User");
-const Course = require("../models/Course")
+const Course = require("../models/Course");
+const cloudinary = require("cloudinary").v2;
 
 exports.updateProfile = async(req,res)=>{
     try{
@@ -104,6 +105,7 @@ exports.getUserAllDetails = async(req,res) =>{
                 return res.status(200).json({
                     success : true,
                     message : "User Data fetched Successfully",
+                    data : userDetails
                 });
                 
 
@@ -117,6 +119,15 @@ exports.getUserAllDetails = async(req,res) =>{
 
         }   
 }
+async function uploadImageToCloudinary(file,folder,quality){
+  const options = {folder};
+  options.resource_type = "auto";
+  if(quality){
+      options.quality = quality;
+  }
+  console.log("temppath",file.tempFilePath);
+ return await cloudinary.uploader.upload(file.tempFilePath,options);
+}
 
 // handler function to update display picture
 exports.updateDisplayPicture = async (req, res) => {
@@ -126,8 +137,6 @@ exports.updateDisplayPicture = async (req, res) => {
       const image = await uploadImageToCloudinary(
         displayPicture,
         process.env.FOLDER_NAME,
-        1000,
-        1000
       )
       console.log(image)
       const updatedProfile = await User.findByIdAndUpdate(
