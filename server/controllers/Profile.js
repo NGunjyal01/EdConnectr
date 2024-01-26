@@ -51,7 +51,10 @@ exports.updateProfile = async(req,res)=>{
 exports.deleteAccount = async(req,res) =>{
     try{
             //get id
+             // agar middleware add nhi krenge toh code phat jayenga and req undefined aayega
             const id = req.user.id;
+      
+           
             //validation
             const userDetails = await User.findById(id);
             if(!userDetails){
@@ -60,11 +63,13 @@ exports.deleteAccount = async(req,res) =>{
                     message : "User Not Found",
                 });
             }
+           
             //delete profile
             await Profile.findByIdAndDelete({_id:userDetails.additionalDetails});
 
             //TODO  :: HW UNenroll user from all the enrolled courses
-            for (const courseId of User.courses) {
+            if(User.courses){
+              for (const courseId of User.courses) {
                 await Course.findByIdAndUpdate(
                   courseId,
                   { $pull: { studentsEnroled: id } },
@@ -72,17 +77,23 @@ exports.deleteAccount = async(req,res) =>{
                 )
               }
 
+            }
+           
+
             //delete user 
             await User.findByIdAndDelete({_id:id});
           
             //return res
             return res.status(200).json({
+                 
                 success : true,
                 message : "User Deleted Successfully",
             })
     }
     catch(error){
+      console.log(error);
             return res.status(400).json({
+            
                 success:false,
                 message:"User cannot be deleted"
             });
@@ -97,7 +108,7 @@ exports.getUserAllDetails = async(req,res) =>{
         try{
                 //get id
                 const id = req.user.id;
-
+     
                 //validation
                 const userDetails = await User.findById(id).populate("additionalDetails").exec();
 
