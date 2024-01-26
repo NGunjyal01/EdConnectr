@@ -20,12 +20,13 @@ exports.createSubSection  = async(req,res) =>{
                     message : 'All fields are required',
                 });
             }
+            // console.log("check");
             //upload video to cloudinary
             const uploadDetails = await uploadImageToCloudinary(video,process.env.FOLDER_NAME);
             //create a subsection
             const subSectionDetails  = await SubSection.create({
                 title:title,
-                timeDuration : timeDuration,
+                timeDuration : uploadDetails.duration,
                 description:description,
                 videoUrl:uploadDetails.secure_url,
             })
@@ -36,13 +37,13 @@ exports.createSubSection  = async(req,res) =>{
                                                                         subSection:subSectionDetails._id,
                                                                     }
                                                                 },
-                                                                {new:true}).populate("subSection");
+                                                                {new:true}).populate("subSection").exec();
                 //HW : log updated section here , after adding populate query
             //return response
             return res.status(200).json({
                 success:true,
                 message : 'Sub Section created successfully',
-                updatedSection,
+                updateSection,
             });
 
     }
@@ -58,7 +59,7 @@ exports.createSubSection  = async(req,res) =>{
 //HW : UPDATE SUBSECTION  ka handler function
 exports.updateSubSection = async (req, res) => {
     try {
-      const { sectionId, subSectionId, title, description } = req.body
+      const { sectionId, subSectionId, title, description ,timeDuration} = req.body
       const subSection = await SubSection.findById(subSectionId)
   
       if (!subSection) {
@@ -71,7 +72,9 @@ exports.updateSubSection = async (req, res) => {
       if (title !== undefined) {
         subSection.title = title
       }
-  
+      if(timeDuration !== undefined){
+        subSection.timeDuration = timeDuration
+      }
       if (description !== undefined) {
         subSection.description = description
       }
