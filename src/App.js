@@ -17,12 +17,14 @@ import Error from "./pages/Error";
 import MyProfile from "./components/core/Dashboard/MyProfile";
 import Settings from "./components/core/Dashboard/Settings";
 import EnrolledCourses from "./components/core/Dashboard/EnrolledCourses";
-import {ACCOUNT_TYPE} from "./utils/constants";
+import { ACCOUNT_TYPE } from "./utils/constants";
 import Cart from "./components/core/Dashboard/Cart";
+import AddCourse from "./components/core/Dashboard/AddCourse";
+import MyCourses from "./components/core/Dashboard/MyCourses";
+import EditCourse from "./components/core/Dashboard/EditCourse";
 
 function App() {
-
-  const { user } = useSelector((state) => state.profile)
+  const { user } = useSelector((state) => state.profile);
 
   return (
     <div className="w-screen min-h-screen bg-richblack-900 flex flex-col font-inter">
@@ -87,18 +89,23 @@ function App() {
         >
           <Route path="dashboard/my-profile" element={<MyProfile />} />
           <Route path="dashboard/settings" element={<Settings />} />
+          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+            <>
+              <Route path="dashboard/cart" element={<Cart />} />
+              <Route
+                path="dashboard/enrolled-courses"
+                element={<EnrolledCourses />}
+              />
+            </>
+          )}
+          {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
+            <>
+              <Route path="dashboard/add-course" element={<AddCourse />} />
+              <Route path="dashboard/my-courses" element={<MyCourses />} />
+              <Route path="dashboard/edit-course/:courseId" element={<EditCourse />} />
+            </>
+          )}
         </Route>
-
-        {user?.accountType === ACCOUNT_TYPE.STUDENT && (
-          <>
-            <Route path="dashboard/cart" element={<Cart />} />
-            <Route
-              path="dashboard/enrolled-courses"
-              element={<EnrolledCourses />}
-            />
-          </>
-        )}
-
         <Route path="*" element={<Error />} />
       </Routes>
     </div>
