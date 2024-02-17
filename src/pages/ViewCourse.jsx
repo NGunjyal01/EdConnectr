@@ -8,36 +8,37 @@ import CourseReviewModal from '../components/core/ViewCourse/CourseReviewModal';
 
 const ViewCourse = () => {
 
-    const [reviewModal, setReviewModal] = useState(false);
-    const {courseId} = useParams();
-    const {token} = useSelector((state)=>state.auth);
-    const dispatch = useDispatch();
+  const [reviewModal, setReviewModal] = useState(false);
+  const { courseId } = useParams();
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-    useEffect(()=> {
-        const setCourseSpecificDetails = async() => {
-              const courseData = await getFullDetailsOfCourse(courseId, token);
-              dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
-              dispatch(setEntireCourseData(courseData.courseDetails));
-              dispatch(setCompletedLectures(courseData.completedVideos));
-              let lectures = 0;
-              courseData?.courseDetails?.courseContent?.forEach((sec) => {
-                lectures += sec.subSection.length
-              })  
-              dispatch(setTotalNoOfLectures(lectures));
-        }
-        setCourseSpecificDetails();
-    },[]);
+  useEffect(() => {
+    const setCourseSpecificDetails = async () => {
+      const courseData = await getFullDetailsOfCourse(courseId, token);
+      dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
+      dispatch(setEntireCourseData(courseData.courseDetails));
+      dispatch(setCompletedLectures(courseData.completedVideos));
+      let lectures = 0;
+      courseData?.courseDetails?.courseContent?.forEach((sec) => {
+        lectures += sec.subSection.length
+      })
+      dispatch(setTotalNoOfLectures(lectures));
+    }
+    setCourseSpecificDetails();
+  }, []);
 
 
   return (
     <>
+      <div>
+        <VideoDetailsSidebar setReviewModal={setReviewModal} />
         <div>
-            <VideoDetailsSidebar setReviewModal={setReviewModal} />
-            <div>
-                <Outlet />
-            </div>
+          <Outlet />
         </div>
-        {reviewModal && <CourseReviewModal setReviewModal={setReviewModal} />}
+        {reviewModal && (<CourseReviewModal setReviewModal={setReviewModal} />)}
+      </div>
+
     </>
   )
 }
