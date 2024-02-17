@@ -91,10 +91,10 @@ const About = () => {
             </div>
             <div className="my-24 flex lg:w-[40%] flex-col gap-10">
               <h1 className="bg-gradient-to-b from-[#1FA2FF] via-[#12D8FA] to-[#A6FFCB] text-transparent bg-clip-text text-4xl font-semibold lg:w-[70%] ">
-              Our Mission
+                Our Mission
               </h1>
               <p className="text-base font-medium text-richblack-300 lg:w-[95%]">
-              Our mission goes beyond just delivering courses online. We wanted to create a vibrant community of learners, where individuals can connect, collaborate, and learn from one another. We believe that knowledge thrives in an environment of sharing and dialogue, and we foster this spirit of collaboration through forums, live sessions, and networking opportunities.
+                Our mission goes beyond just delivering courses online. We wanted to create a vibrant community of learners, where individuals can connect, collaborate, and learn from one another. We believe that knowledge thrives in an environment of sharing and dialogue, and we foster this spirit of collaboration through forums, live sessions, and networking opportunities.
               </p>
             </div>
           </div>
@@ -113,6 +113,7 @@ const About = () => {
           Reviews from other learners
         </h1>
         {/* <ReviewSlider /> */}
+        <ReviewSlider />
       </div>
       <Footer />
     </div>

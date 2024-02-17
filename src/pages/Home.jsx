@@ -14,8 +14,7 @@ import ExploreMore from "../components/core/HomePage/ExploreMore"
 import InstructorSection from "../components/core/HomePage/InstructorSection"
 import LearningLanguageSection from "../components/core/HomePage/LearningLanguageSection"
 import TimelineSection from "../components/core/HomePage/TimelineSection"
-
-
+import ReviewSlider from "../components/common/ReviewSlider"
 
 
 function Home() {
@@ -181,9 +180,8 @@ function Home() {
                 <InstructorSection />
 
                 {/* Reviws from Other Learner */}
-                <h1 className="text-center text-4xl font-semibold mt-8">
-                    Reviews from other learners
-                </h1>
+                <h1 className="text-center text-4xl font-semibold mt-8">Reviews from other learners</h1>
+                <ReviewSlider />
             </div>
 
             {/* Footer */}
