@@ -2,14 +2,13 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User")
 const OTP = require("../models/OTP")
 const otpGenerator = require("otp-generator")
-const mailSender = require("../utils/mailSender");
-const { passwordUpdated } = require("../mail/templates/passwordUpdate");
+const sendmail = require("../utils/mailSender");
+const {  passwordUpdated } = require("../mail/templates/passwordUpdate");
+const otpTemplate = require("../mail/templates/emailVerificationTemplate");
 const Profile = require("../models/Profile");
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
-
-// Send OTP For Email Verification
 
 
 exports.sendotp = async (req, res) => {
@@ -35,24 +34,53 @@ exports.sendotp = async (req, res) => {
 			lowerCaseAlphabets: false,
 			specialChars: false,
 		});
+
 		const result = await OTP.findOne({ otp: otp });
+
 		console.log("Result is Generate OTP Func");
 		console.log("OTP", otp);
 		console.log("Result", result);
+
 		while (result) {
 			otp = otpGenerator.generate(6, {
 				upperCaseAlphabets: false,
 			});
 		}
+
 		const otpPayload = { email, otp };
 		const otpBody = await OTP.create(otpPayload);
 		console.log("OTP Body", otpBody);
+
+       const body = otpTemplate(otp);
+	   //console.log(body);
+		try {
+            const emailResponse = await sendmail(
+                email,
+				"Verification Email For OTP",
+                body
+            )
+            // console.log("Email sent successfully:", emailResponse.response)
+        } catch (error) {
+            // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
+            console.error("Error occurred while sending email:", error)
+            return res.status(500).json({
+                success: false,
+                message: "Error occurred while sending email",
+                error: error.message,
+            })
+        }
+
+		
 		res.status(200).json({
 			success: true,
 			message: `OTP Sent Successfully`,
 			otp,
 		});
+
+
+
 	} catch (error) {
+		console.log("error while sending otp");
 		console.log(error.message);
 		return res.status(500).json({ success: false, error: error.message });
 	}
@@ -173,6 +201,7 @@ exports.sendotp = async (req, res) => {
 //         })
 //     }
 // }
+
 exports.signup = async (req, res) => {
 	try {
 		// Destructure fields from the request body
@@ -220,7 +249,12 @@ exports.signup = async (req, res) => {
 
 		// Find the most recent OTP for the email
 		const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+		
+
+
+
 		console.log(response);
+		console.log("error");
 		if (response.length === 0) {
 			// OTP not found for the email
 			return res.status(400).json({
@@ -389,26 +423,24 @@ exports.changePassword = async (req, res) => {
         )
 
         // Send notification email
-        try {
-            const emailResponse = await mailSender(
-                updatedUserDetails.email,
-                "Password for your account has been updated",
-                passwordUpdated(
-                    updatedUserDetails.email,
-                    `Password updated successfully for ${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
-                )
-            )
-            console.log("Email sent successfully:", emailResponse.response)
-        } catch (error) {
-            // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
-            console.error("Error occurred while sending email:", error)
-            return res.status(500).json({
-                success: false,
-                message: "Error occurred while sending email",
-                error: error.message,
-            })
-        }
-
+		const body = passwordUpdated(updatedUserDetails.email,updatedUserDetails.firstName+" "+updatedUserDetails.lastName);
+		//console.log(body);
+		 try {
+			 const emailResponse = await sendmail(
+				updatedUserDetails.email,
+				 "Verification For Password Changed ",
+				 body
+			 )
+			 // console.log("Email sent successfully:", emailResponse.response)
+		 } catch (error) {
+			 // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
+			 console.error("Error occurred while sending email:", error)
+			 return res.status(500).json({
+				 success: false,
+				 message: "Error occurred while sending email",
+				 error: error.message,
+			 })
+		 }
         // Return success response
         return res
             .status(200)

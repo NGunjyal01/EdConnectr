@@ -54,10 +54,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         enum: ["Draft", "Published"],
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+    // createdAt: {
+    //     type: Date,
+    //     default: Date.now
+    // },
 });
 
 //export the course model

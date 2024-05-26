@@ -6,6 +6,28 @@ exports.contactUsController = async (req, res) => {
   const { email, firstname, lastname, message, phoneNo, countrycode } = req.body
 
   console.log(req.body)
+  
+  const mymail = "rajrahul4260@gmail.com";
+
+  try {
+    const emailRes = await mailSender(
+                               mymail,
+                                `Message From ${firstname} ${lastname}`,
+                                contactUsEmail(email, firstname, lastname, message, phoneNo, countrycode)
+    )
+
+    // console.log("Email Res ", emailRes);
+
+  } 
+  catch (error) {
+
+    console.log("Error", error)
+    console.log("Error message :", error.message)
+     return res.json({
+      success: false,
+      message: "Something went wrong...",
+    })
+  }
 
   try {
     const emailRes = await mailSender(
@@ -14,7 +36,7 @@ exports.contactUsController = async (req, res) => {
                                 contactUsEmail(email, firstname, lastname, message, phoneNo, countrycode)
     )
 
-    console.log("Email Res ", emailRes);
+    // console.log("Email Res ", emailRes);
 
     return res.json({
       success: true,
