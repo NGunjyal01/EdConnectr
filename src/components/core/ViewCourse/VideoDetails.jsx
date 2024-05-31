@@ -6,7 +6,7 @@ import { updateCompletedLectures } from '../../../slices/viewCourseSlice';
 import { Player } from 'video-react';
 import 'video-react/dist/video-react.css';
 import { AiFillPlayCircle } from "react-icons/ai"
-import IconBtn from '../../common/IconBtn';
+import IconBtn from '../../common/common/IconBtn';
 
 const VideoDetails = () => {
 

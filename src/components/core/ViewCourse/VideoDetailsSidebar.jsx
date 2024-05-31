@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import IconBtn from '../../common/IconBtn';
+import IconBtn from '../../common/common/IconBtn';
 
 const VideoDetailsSidebar = ({setReviewModal}) => {
 
