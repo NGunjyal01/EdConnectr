@@ -69,6 +69,8 @@ exports.createCourse = async (req, res) => {
 
 		// Check if the tag given is valid
 		const categoryDetails = await Category.findById(category);
+		// console.log("tt");
+		// console.log(categoryDetails);
 		if (!categoryDetails) {
 			return res.status(404).json({
 				success: false,
@@ -107,13 +109,14 @@ exports.createCourse = async (req, res) => {
 			},
 			{ new: true }
 		);
-		// Add the new course to the Categories
 
-		const categoryDetails2 = await Category.findByIdAndUpdate(
+
+		// Add the new course to the Categories
+		 await Category.findByIdAndUpdate(
 			{ _id: category },
 			{
 				$push: {
-					course: newCourse._id,
+					courses: newCourse._id,
 				},
 			},
 			{ new: true }
